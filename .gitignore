@@ -1,0 +1,24 @@
+# Virtual environment
+my_venv/
+
+# Terraform state, provider plugins, and lock files
+# Terraform backend & plugin folders
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/.terraform.lock.hcl
+
+# Airflow logs and runtime data
+airflow/logs/
+airflow/data/input/
+airflow/config/config.conf
+
+# Python cache and compiled files
+__pycache__/
+
+# Local test script
+pyspark_script_original.py
+
+# VS Code and macOS system files (optional but good)
+.vscode/
+.DS_Store

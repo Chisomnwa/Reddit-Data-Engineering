@@ -1,0 +1,9 @@
+# Will contain all packages that are manually installed
+apache-airflow==3.0.2
+pandas==2.3.0
+numpy==2.3.0
+praw==7.8.1
+configparser==7.2.0
+s3fs==2025.5.1
+boto3==1.37.0
+apache-airflow-providers-amazon==9.8.0
