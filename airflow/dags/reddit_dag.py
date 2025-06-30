@@ -17,16 +17,6 @@ from pipelines.aws_s3_pipeline import upload_raw_data_pipeline, upload_glue_scri
 from utils.constants import AWS_DATA_BUCKET_NAME
 from pipelines.glue_pipeline import trigger_glue_job, trigger_glue_crawler
 
-# Define DAG folder path for mounted Docker volume
-# dag_folder = "/opt/airflow/sql"
-# sql_file = "create_table.sql"  
-# This above two lines work if the sql folder is in the dags folder which is where the RedshiftDataOperator searches for it.
-# But in this case, the sql folder is mounted as a volume in the container at /opt/airflow/sql, 
-# which is not the dags folder. So, we need to read in sql file directly from the mounted path.
-
-with open("/opt/airflow/sql/create_table.sql", "r") as f:
-    create_table_sql = f.read()
-
 # Define default arguments for the DAG
 default_args = {
     'owner': 'Chisom Nnamani',
