@@ -49,7 +49,7 @@ dag = DAG(
     tags=['reddit', 'etl', 'pipeline']
 )
 
-# Extraction from reddit
+# Task 1: Extraction from reddit
 extract_data = PythonOperator(
     task_id='reddit_extraction',
     python_callable=reddit_pipeline,
@@ -62,14 +62,14 @@ extract_data = PythonOperator(
     dag=dag
 )
 
-# Upload raw data to s3
+# Task 2: Upload raw data to s3
 upload_data_to_s3 = PythonOperator(
     task_id='raw_data_to_s3',
     python_callable=upload_raw_data_pipeline,
     dag=dag
 )
 
-# Trigger RAW crawler (after uploading raw data to S3)
+# Task 3: Trigger RAW crawler (after uploading raw data to S3)
 trigger_raw_crawler = PythonOperator(
     task_id='trigger_raw_crawler',
     python_callable=trigger_glue_crawler,
@@ -80,14 +80,14 @@ trigger_raw_crawler = PythonOperator(
     dag=dag,
 )
 
-# Upload Glue job script to S3
+# Task 4: Upload Glue job script to S3
 upload_glue_script = PythonOperator(
     task_id='upload_glue_script',
     python_callable=upload_glue_script_pipeline,
     dag=dag
 )
 
-# Trigger Glue job to transform data
+# Task 5: Trigger Glue job to transform data
 # The Glue job will read from the raw data S3 bucket and write to the transformed data folder
 trigger_glue = PythonOperator(
     task_id='trigger_glue_job',
@@ -101,7 +101,7 @@ trigger_glue = PythonOperator(
     dag=dag
 )
 
-# Wait for Glue job to complete
+# Task 6: Wait for Glue job to complete
 wait_for_glue_job = GlueJobSensor(
     task_id='wait_for_glue_completion',
     job_name='reddit-glue-job',
@@ -112,7 +112,7 @@ wait_for_glue_job = GlueJobSensor(
     timeout=600  # timeout after 10 minutes
 )
 
-# Trigger TRANSFORMED crawler (after Glue job completes)
+# Task 7: Trigger TRANSFORMED crawler (after Glue job completes)
 trigger_transformed_crawler = PythonOperator(
     task_id='trigger_transformed_crawler',
     python_callable=trigger_glue_crawler,
@@ -123,40 +123,17 @@ trigger_transformed_crawler = PythonOperator(
     dag=dag,
 )
 
-# Task 3: Create table in Redshift
-create_table = RedshiftDataOperator(
-    task_id = "create_table",
+# TTask 8: To validate the data in Redshift after transformation
+validate_external_query = RedshiftDataOperator(
+    task_id = "validate_external_query",
     cluster_identifier="reddit-cluster",
     database="reddit_database",
-    sql=create_table_sql,
+    sql="SELECT COUNT(*) FROM spectrum_schema.reddit_transformed;",
     aws_conn_id="aws_default",
     wait_for_completion=True,
-    region="af-south-1",
-        params={
-        "schema": "public",
-        "table": "reddit_data",# the name of the table in the sql file.
-    },
-            )
-
-# Task 4: Load transformed data into Redshift
-load_data_to_redshift = S3ToRedshiftOperator(
-    task_id='load_data_to_redshift',
-    schema='public',
-    table='reddit_data',
-    s3_bucket='reddit-data-bucket-2025',
-    s3_key='transformed/',
-    redshift_conn_id='redshift_default',
-    aws_conn_id='aws_default',
-    copy_options=[
-        "CSV",                # Required: you're using CSVs
-        "IGNOREHEADER 1",     # Assumes your CSVs have headers
-        "DELIMITER ','",      # Default delimiter, explicitly set
-        # "REMOVEQUOTES",       # Optional, but helpful if values are quoted
-        "EMPTYASNULL"         # Optional, treat empty strings as NULL
-    ],
-    method='REPLACE',
+    region="af-south-1"
 )
 
-extract_data >> upload_data_to_s3 >> trigger_raw_crawler >> upload_glue_script >> trigger_glue >> wait_for_glue_job >> trigger_transformed_crawler >> create_table >> load_data_to_redshift
+extract_data >> upload_data_to_s3 >> trigger_raw_crawler >> upload_glue_script >> trigger_glue >> wait_for_glue_job >> trigger_transformed_crawler
 
 
