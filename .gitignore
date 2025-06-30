@@ -8,22 +8,13 @@ terraform/*.tfstate
 terraform/*.tfstate.backup
 terraform/.terraform.lock.hcl
 
-# Terraform files used for testing
-terraform/modules/glue/main.tf1
-terraform/modules/glue/main.tf2
-
 # Airflow logs and runtime data
-airflow/sql/                    # Would be necessary if the intent is to create a table in redshift
 airflow/logs/
 airflow/data/input/
 airflow/config/config.conf
 
 # Python cache and compiled files
 __pycache__/
-
-# Local test script
-pyspark_script_original.py
-dag_original.py                # DAG script if the intent is to load data directly to the redshift table
 
 # VS Code and macOS system files (optional but good)
 .vscode/
