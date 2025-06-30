@@ -46,31 +46,31 @@
 #   data_bucket_name = module.my_s3_data_bucket.bucket_name # from your s3 module
 #   # script_bucket_name    = module.s3.script_bucket_name        # if needed
 #   workgroup_name          = "reddit_athena_workgroup"
-#   query_result_bucket     = module.my_s3_data_bucket.bucket_name  # where Athena will store query results
-#   query_result_prefix     = "reddit_query"                        # a folder/prefix inside the data bucket
-#   database_name           = module.glue.transformed_database_name # <-- this
-#   table_prefix            = module.glue.transformed_table_prefix  # optional
-#   transformed_data_prefix = "transformed/"                        # or expose from glue module
+#   query_result_bucket     = module.my_s3_data_bucket.bucket_name # where Athena will store query results
+#   query_result_prefix     = "reddit_query"                       # a folder/prefix inside the data bucket
+#   database_name           = module.glue.transformed_database_name
+#   table_prefix            = module.glue.transformed_table_prefix # optional
+#   transformed_data_prefix = "transformed/"                       # or expose from glue module
 # }
 
-# data "aws_ssm_parameter" "password" {
-#   name = "redshift_password"
-# }
+# # data "aws_ssm_parameter" "password" {
+# #   name = "redshift_password"
+# # }
 
-# data "aws_ssm_parameter" "username" {
-#   name = "redshift_username"
-# }
+# # data "aws_ssm_parameter" "username" {
+# #   name = "redshift_username"
+# # }
 
 # module "ssm" {
 #   source = "./modules/ssm"
 # }
 
-# module "redshift" {
-#   source                = "./modules/redshift"
-#   redshift_subnet_group = module.vpc.subnet_group_id
-#   redshift_role_arn     = module.iam.redshift_s3_role_arn # Pointing to the output of the iam_roles
-#   username              = data.aws_ssm_parameter.username.value
-#   password              = data.aws_ssm_parameter.password.value
-#   database_name         = "reddit_database"
-#   cluster_identifier    = "reddit-cluster" # It must contain only lowercase alphanumeric characters (a-z, 0-9) and hyphens (-).
-# }
+# # module "redshift" {
+# #   source                = "./modules/redshift"
+# #   redshift_subnet_group = module.vpc.subnet_group_id
+# #   redshift_role_arn     = module.iam.redshift_s3_role_arn # Pointing to the output of the iam_roles
+# #   username              = data.aws_ssm_parameter.username.value
+# #   password              = data.aws_ssm_parameter.password.value
+# #   database_name         = "reddit_database"
+# #   cluster_identifier    = "reddit-cluster" # It must contain only lowercase alphanumeric characters (a-z, 0-9) and hyphens (-).
+# # }
