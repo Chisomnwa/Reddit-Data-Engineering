@@ -7,6 +7,7 @@ terraform/.terraform/
 terraform/*.tfstate
 terraform/*.tfstate.backup
 terraform/.terraform.lock.hcl
+terraform/modules/lake_formation/       # Not necessary for the project. 
 
 # Airflow logs and runtime data
 airflow/logs/

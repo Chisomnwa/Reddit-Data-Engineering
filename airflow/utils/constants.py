@@ -23,6 +23,8 @@ AWS_SECRET_ACCESS_KEY = parser.get('aws', 'aws_secret_access_key')
 AWS_REGION = parser.get('aws', 'aws_region')
 AWS_DATA_BUCKET_NAME = parser.get('aws', 'aws_data_bucket_name')
 AWS_CODE_BUCKET_NAME = parser.get('aws', 'aws_script_bucket_name')
+REDSHIFT_ROLE_ARN = parser.get('aws', 'redshift_role_arn').strip()  # .strip() removes ALL whitespace
+REDSHIFT_DB_USER = parser.get('aws', 'redshift_db_user')
 
 POST_FIELDS = (
     'id',

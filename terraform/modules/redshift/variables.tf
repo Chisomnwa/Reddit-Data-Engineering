@@ -27,3 +27,14 @@ variable "cluster_identifier" {
   description = "Identifier for the Redshift cluster"
   type        = string
 }
+
+variable aws_region {
+  description = "AWS region for the Redshift cluster"
+  type        = string
+}
+
+# variable "admin_username" {
+#   type        = string
+#   description = "Redshift admin username"
+#   default     = "admin_chisom"  # Match your actual admin username
+# }

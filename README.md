@@ -42,7 +42,7 @@ This project demonstrates a complete ETL pipeline integrating:
 - ✅ Parameterized and dynamic DAG execution.
 - ✅ Glue job and crawler triggering from within Airflow.
 - ✅ Raw and transformed data cataloged via AWS Glue crawlers.
-- ✅ Data loaded into Redshift via `S3ToRedshiftOperator`.
+- ✅ Data queried via Athena and via external tables (spectrum) in Redshift.
 
 ---
 
@@ -53,9 +53,9 @@ This project demonstrates a complete ETL pipeline integrating:
 3. **Trigger Glue crawler** for raw data.
 4. **Upload Glue script** and **trigger Glue job** to transform data.
 5. **Trigger crawler** for transformed data.
-6. **Create Redshift table** (if not exists).
-7. **Load data** into Redshift from S3.
+6. **Query transformed data** using Redshift Spectrum (no need to load data into Redshift).
 
+---
 ## 📦 Setup Instructions
 
 > ⚠️ Ensure you have AWS credentials configured (`aws configure`) and Docker installed.
@@ -100,4 +100,5 @@ This project demonstrates a complete ETL pipeline integrating:
 - Add unit and integration tests
 
 ## 📖 Medium Article
-You will enjoy the full article on this project. Link here.
+📖 Medium Article
+👉 Check out the full walkthrough in the accompanying Medium article: [Link here]

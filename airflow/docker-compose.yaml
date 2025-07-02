@@ -87,6 +87,7 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/pipelines:/opt/airflow/pipelines
     - ${AIRFLOW_PROJ_DIR:-.}/tests:/opt/airflow/tests
     - ${AIRFLOW_PROJ_DIR:-.}/utils:/opt/airflow/utils
+    - ${AIRFLOW_PROJ_DIR:-.}/sql:/opt/airflow/sql
     - ${AIRFLOW_PROJ_DIR:-.}/glue_jobs:/opt/airflow/glue_jobs
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:

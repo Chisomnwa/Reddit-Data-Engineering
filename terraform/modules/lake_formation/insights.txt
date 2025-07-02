@@ -1,0 +1,48 @@
+I did not provison this lake formation module because i found out it wasn't necessary.
+I intially thought it was necessary becasue i read for you to query the data in data catalog via sprectrum, 
+I will need it, till i provisioned provison it and everything still worked out fine.
+
+Then i asked chatgpt why everything still worked, and it gave me the following responses.
+
+✅ Why Redshift Spectrum Worked Without Lake Formation Module:
+Redshift Spectrum can query external tables from the AWS Glue Data Catalog without needing Lake Formation, if:
+
+Your IAM role (attached to Redshift) has the necessary Glue and S3 permissions.
+
+The Glue Catalog tables and S3 data locations are not governed by Lake Formation, or LF is not enforcing permissions on them.
+
+By default:
+
+When Lake Formation is not enabled for governance (or even not used at all), Glue permissions are enough.
+
+So if your redshift_service_role has permissions like:
+
+glue:GetDatabase, glue:GetTable, etc.
+
+s3:GetObject on the bucket where your data is,
+
+then Redshift Spectrum will work just fine.
+
+The Lake Formation module you wrote (with main.tf, variables.tf, and outputs.tf) becomes necessary only when:
+
+You enable Lake Formation permissions to govern access to Glue tables and S3 locations.
+
+You need fine-grained access control (e.g. column-level access, row filtering, data masking).
+
+You explicitly use Lake Formation's permission model, which overrides default Glue/S3 IAM-based access.
+
+✅ So what happened in your case?
+You did not enable Lake Formation governance, and you're not yet using Lake Formation's permission model.
+
+Your IAM Redshift role already has sufficient permissions via the attached policies (AmazonS3FullAccess, AWSGlueConsoleFullAccess, etc.).
+
+Hence, Redshift Spectrum is able to:
+
+Connect to the Glue Catalog
+
+Read external tables
+
+Access S3 data
+
+Run queries — without Lake Formation involved.
+

@@ -6,16 +6,33 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.providers.standard.operators.python import PythonOperator
 from airflow.providers.amazon.aws.operators.redshift_data import RedshiftDataOperator
-from airflow.providers.amazon.aws.transfers.s3_to_redshift import S3ToRedshiftOperator
+# from airflow.providers.amazon.aws.transfers.s3_to_redshift import S3ToRedshiftOperator
 from airflow.providers.amazon.aws.sensors.glue import GlueJobSensor
+from airflow.providers.amazon.aws.sensors.glue_crawler import GlueCrawlerSensor
 
 # Custom module imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from pipelines.reddit_pipeline import reddit_pipeline
 from pipelines.aws_s3_pipeline import upload_raw_data_pipeline, upload_glue_script_pipeline
-from utils.constants import AWS_DATA_BUCKET_NAME
+from utils.constants import AWS_DATA_BUCKET_NAME, REDSHIFT_ROLE_ARN, AWS_REGION, REDSHIFT_DB_USER
 from pipelines.glue_pipeline import trigger_glue_job, trigger_glue_crawler
+from pipelines.redshift_pipeline import validate_spectrum_schema, load_sql_from_volume
+
+# Load SQL scripts from the mounted Docker volume directory
+placeholders = {
+    "REDSHIFT_ROLE_ARN": REDSHIFT_ROLE_ARN,
+    "AWS_REGION": AWS_REGION
+}
+
+sql_statements = load_sql_from_volume("/opt/airflow/sql", placeholders)
+
+# Load the script for creating our Spectrum schema
+create_schema_sql = sql_statements["create_spectrum_schema.sql"]
+
+# If you want to create a table instead of an external schema, you can load the create table SQL script
+# create_table_sql = sql_statements["create_table.sql"]
+
 
 # Define default arguments for the DAG
 default_args = {
@@ -97,7 +114,6 @@ wait_for_glue_job = GlueJobSensor(
     job_name='reddit-glue-job',
     run_id="{{ task_instance.xcom_pull(task_ids='trigger_glue_job', key='return_value') }}",
     aws_conn_id='aws_default',
-    # region_name='af-south-1',
     poke_interval=60,  # checks every 60 seconds
     timeout=600  # timeout after 10 minutes
 )
@@ -113,17 +129,49 @@ trigger_transformed_crawler = PythonOperator(
     dag=dag,
 )
 
-# TTask 8: To validate the data in Redshift after transformation
-validate_external_query = RedshiftDataOperator(
-    task_id = "validate_external_query",
+
+"""
+This creates a Spectrum (external) schema in Redshift.
+
+In terraform/modules/redshift/main.tf, we previously demonstrated how to create
+the Redshift Spectrum external schema using Terraform. However, in this case,
+we're creating the schema via Airflow.
+
+This approach is useful when you want to create the schema dynamically or manage
+it entirely through Airflow instead of Terraform.
+
+Note: Instead of using the master DB user (i.e., the Redshift cluster admin whose
+credentials are stored in an SSM parameter), we’ll use a dedicated DB user.
+This DB user was created with the master user via Terraform and will be used here
+to create the external schema.
+"""
+
+# This task waits for the transformed crawler to complete
+wait_for_transformed_crawler = GlueCrawlerSensor(
+    task_id='wait_for_transformed_crawler',
+    crawler_name='reddit_transformed_crawler',
+    aws_conn_id='aws_default',
+    poke_interval=60,  # Check every 60 seconds
+    timeout=600,  # Timeout after 10 minutes
+    mode='poke'
+)
+
+# This task creates the Spectrum schema in Redshift
+create_spectrum_schema = RedshiftDataOperator(
+    task_id="create_spectrum_schema",
     cluster_identifier="reddit-cluster",
     database="reddit_database",
-    sql="SELECT COUNT(*) FROM spectrum_schema.reddit_transformed;",
+    db_user=REDSHIFT_DB_USER,  # Replace with your actual Redshift admin username
+    sql=create_schema_sql,
     aws_conn_id="aws_default",
-    wait_for_completion=True,
     region="af-south-1"
 )
 
-extract_data >> upload_data_to_s3 >> trigger_raw_crawler >> upload_glue_script >> trigger_glue >> wait_for_glue_job >> trigger_transformed_crawler
+# This tasks validates the creation of the Spectrum schema in Redshift
+validate_schema = PythonOperator(
+    task_id='validate_schema',
+    python_callable=validate_spectrum_schema,
+    dag=dag
+)
 
-
+extract_data >> upload_data_to_s3 >> trigger_raw_crawler >> upload_glue_script >> trigger_glue >> wait_for_glue_job >> trigger_transformed_crawler >> wait_for_transformed_crawler >> create_spectrum_schema >> validate_schema

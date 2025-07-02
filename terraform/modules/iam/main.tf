@@ -118,8 +118,8 @@ resource "aws_iam_policy_attachment" "glue_role_attachment" {
 }
 
 
-##########################################################
-# IAM Role for Redshift to access S3 bucket
+############################################################
+# IAM Role for Redshift to access S3, Glue, and Lake Formation
 resource "aws_iam_role" "redshift_role" {
   name = "redshift_service_role"
 
@@ -144,10 +144,10 @@ resource "aws_iam_role" "redshift_role" {
   }
 }
 
-# Create an IAM policy for the above redshift role
-resource "aws_iam_policy" "redshift_s3_custom_policy" {
-  name = "RedshiftS3CustomPolicy"
-  description = "Policy to allow Redshift access to read (and optionally write) data to S3"
+# IAM Policy with S3, Glue, and Lake Formation permissions
+resource "aws_iam_policy" "redshift_s3_glue_lf_policy" {
+  name        = "RedshiftS3GlueLakeFormationPolicy"
+  description = "Policy to allow Redshift access to S3, Glue Catalog, and Lake Formation"
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -157,7 +157,7 @@ resource "aws_iam_policy" "redshift_s3_custom_policy" {
         Action = [
           "s3:ListBucket"
         ],
-        Resource = "arn:aws:s3:::${var.data_bucket_name}" # S3 bucket for data
+        Resource = "arn:aws:s3:::${var.data_bucket_name}"
       },
       {
         Sid = "AllowObjectOperations",
@@ -168,73 +168,37 @@ resource "aws_iam_policy" "redshift_s3_custom_policy" {
           "s3:PutObject",
           "s3:DeleteObject"
         ],
-        Resource = "arn:aws:s3:::${var.data_bucket_name}/*" # S3 bucket for data
-      }
+        Resource = "arn:aws:s3:::${var.data_bucket_name}/*"
+      },
+      {
+        Sid = "AllowGlueCatalogAccess",
+        Effect = "Allow",
+        Action = [
+          "glue:*"
+        ],
+        Resource = "*"
+      },
+      # Lake Formation is an AWS service that manages data access control on top of the AWS Glue Data Catalog.
+      # Even if your IAM role has permission to access S3 and Glue, Lake Formation can still block access 
+      # unless you explicitly grant permissions there.
+      # Think of it as a security layer for querying data in S3 via Athena or Redshift Spectrum.
+      # So, this is saying; this role is allowed to talk to lake formation.
+      {
+        Sid = "AllowLakeFormationAccess",
+        Effect = "Allow",
+        Action = [
+          "lakeformation:GetDataAccess"
+        ],
+        Resource = "*"
+      },
     ]
   })
 }
 
-
-# Atach the policy to the redshift iam role
-resource "aws_iam_role_policy_attachment" "attach_custom_policy_to_redshift_role" {
+# Attach the policy to the Redshift IAM role
+resource "aws_iam_role_policy_attachment" "attach_policy_to_redshift_role" {
   role       = aws_iam_role.redshift_role.name
-  policy_arn = aws_iam_policy.redshift_s3_custom_policy.arn
+  policy_arn = aws_iam_policy.redshift_s3_glue_lf_policy.arn
 }
 
-
-############################################################
-
-# commented out because Athen doesn't ned a role as far as glue has access to the s3 bucket
-
-# # Create an IAM role for Athena to aces the s3 bucket
-# resource "aws_iam_role" "athena_role" {
-#   name = "athena_s3_iam_role"
-
-#   assume_role_policy = jsonencode({
-#     Version = "2012-10-17"
-#     Statement = [
-#       {
-#         Action = "sts:AssumeRole"
-#         Effect = "Allow"
-#         Sid    = ""
-#         Principal = {
-#           Service = "athena.amazonaws.com"
-#         }
-#       },
-#     ]
-#   })
-
-#   tags = {
-#     name = "reddit_pipeline_role"
-#   }
-# }
-
-# # Create an IAM policy for the above athena role
-# resource "aws_iam_policy" "athena_s3_custom_policy" {
-#   name = "AthenaS3CustomPolicy"
-#   description = "Policy to allow Athena put query results in the S3 bucket"
-#   policy = jsonencode({
-#     Version = "2012-10-17",
-#     Statement = [
-#       {
-#         Sid = "AllowListBucket",
-#         Effect = "Allow",
-#         Action = [
-#           "s3:ListBucket"
-#         ],
-#         Resource = "arn:aws:s3:::${var.data_bucket_name}" # S3 bucket for data
-#       },
-#       {
-#         Sid = "AllowObjectOperations",
-#         Effect = "Allow",
-#         Action = [
-#           "s3:GetObject",
-#           "s3:GetObjectVersion",
-#           "PutObject",
-#           "s3:DeleteObject"
-#         ],
-#         Resource = "arn:aws:s3:::${var.data_bucket_name}/*" # S3 bucket for data
-#       }
-#     ]
-#   })
-# }
+##########################################################
