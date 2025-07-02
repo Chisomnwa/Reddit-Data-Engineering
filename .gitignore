@@ -20,3 +20,6 @@ __pycache__/
 # VS Code and macOS system files (optional but good)
 .vscode/
 .DS_Store
+
+# Don't want to version control
+reddit_etl_architecture.drawio
