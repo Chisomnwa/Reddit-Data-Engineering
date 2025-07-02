@@ -1,6 +1,5 @@
 # Reddit Data Pipeline Engineering 🚀
-
-An end-to-end data engineering project that extracts data from Reddit, processes and transforms it through an ETL pipeline orchestrated with Airflow and Celery, and loads it into a Redshift data warehouse using AWS-native services.
+An end-to-end data engineering project that extracts data from Reddit, processes and transforms it through an ETL pipeline orchestrated with Airflow and Celery, and makes it queryable via Amazon Athena and Amazon Redshift using external tables through Redshift Spectrum. The pipeline leverages AWS-native services to store, catalog, and analyze data directly from Amazon S3—without loading it into Redshift itself.
 
 ---
 
@@ -13,8 +12,8 @@ This project demonstrates a complete ETL pipeline integrating:
 - **PostgreSQL** for metadata handling
 - **Amazon S3** for raw and transformed data storage
 - **AWS Glue** for data cataloging and transformation
-- **Amazon Athena** for querying data from S3
-- **Amazon Redshift** for analytics and reporting
+- **Amazon Athena** for intitial exploration of data from S3
+- **Amazon Redshift via externa schema and table** for further analytics and reporting
 
 ---
 
