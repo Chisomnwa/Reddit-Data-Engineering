@@ -7,7 +7,6 @@ terraform/.terraform/
 terraform/*.tfstate
 terraform/*.tfstate.backup
 terraform/.terraform.lock.hcl
-terraform/modules/lake_formation/       # Not necessary for the project. 
 
 # Airflow logs and runtime data
 airflow/logs/
@@ -20,6 +19,3 @@ __pycache__/
 # VS Code and macOS system files (optional but good)
 .vscode/
 .DS_Store
-
-# Don't want to version control
-reddit_etl_architecture.drawio
