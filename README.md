@@ -18,7 +18,7 @@ This project demonstrates a complete ETL pipeline integrating:
 ---
 
 ## 🛠️ Data Architecture
-![image](https://github.com/Chisomnwa/Reddit-Data-Engineering/blob/main/images/reddit_etl_architecture.png)
+![image](https://github.com/Chisomnwa/Reddit-Data-Pipeline-Engineering/blob/main/images/reddit_etl_architecture.png)
 
 ---
 ## 🛠️ Tools & Technologies
