@@ -33,17 +33,6 @@ output "redshift_s3_glue_lf_role_arn" {
   value = module.iam.redshift_role_arn
 }
 
-# # Uncomment this block after you successfully run your dag because it needs the table in the databse to exist.
-# module "lake_formation" {    
-#   source = "./modules/lake_formation"
-
-#   redshift_role_arn = module.iam.redshift_role_arn
-#   database_name     = "reddit_transformed_database"
-
-#   # Make sure IAM resources are created first
-#   depends_on = [module.iam, module.glue]
-# }
-
 module "glue" {
   source           = "./modules/glue"
   data_bucket_name = module.my_s3_data_bucket.bucket_name
