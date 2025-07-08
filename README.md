@@ -56,7 +56,7 @@ This project demonstrates a complete ETL pipeline integrating:
 
 ---
 
-## Project Folders and Files Descriptions
+🗂️ ## Project Folder Structure and Files Description
 Here is an overview of the sub-directories and files. Under the reddit_data_engineering main folder, we have:
 **Airflow Directory:**
 - Complete workflow orchestration setup with DAGs, ETL scripts, pipelines, and utilities
@@ -113,7 +113,7 @@ Within the airflow/ directory of this project, several essential subdirectories,
 - ***create_table.sql***: Contains SQL DDL statements to create the target Redshift table that will store the transformed Reddit data. (But only necessary if you plan to load data directly into Redshift, rather than querying external tables via Spectrum.)
 
 **utils/ sub-directory**
-- constants.py: Centralized constants and config loader for the project. It reads from config.conf and provides clean access to settings across different scripts.
+- ***constants.py***: Centralized constants and config loader for the project. It reads from config.conf and provides clean access to settings across different scripts.
 ---
 
 ## 📦 Setup Instructions
