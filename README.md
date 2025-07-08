@@ -98,6 +98,8 @@ This project demonstrates a complete ETL pipeline integrating:
 
 - Add unit and integration tests
 
+<!--
 ## 📖 Medium Article
 📖 Medium Article
 👉 Check out the full walkthrough in the accompanying Medium article: [[Link here]](https://medium.com/@chisomnnamani/building-a-reddit-data-pipeline-220811ed16fa)
+-->
