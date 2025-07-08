@@ -56,7 +56,7 @@ This project demonstrates a complete ETL pipeline integrating:
 
 ---
 
-🗂️ ## Project Folder Structure and Files Description
+## 🗂️ Project Folder Structure and Files Description
 Here is an overview of the sub-directories and files. Under the reddit_data_engineering main folder, we have:
 **Airflow Directory:**
 - Complete workflow orchestration setup with DAGs, ETL scripts, pipelines, and utilities
