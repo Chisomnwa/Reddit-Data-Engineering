@@ -55,39 +55,6 @@ This project demonstrates a complete ETL pipeline integrating:
 6. **Query transformed data** using Redshift Spectrum (no need to load data into Redshift).
 
 ---
-## 📦 Setup Instructions
-
-> ⚠️ Ensure you have AWS credentials configured (`aws configure`) and Docker installed.
-
-1. **Clone the repo**
-   ```bash
-   git clone https://github.com/your-username/Reddit-Data-Engineering.git
-   cd Reddit-Data-Engineering
-
-2. **Set up Python virtual environment**
-   ```bash
-   python -m venv my_venv
-
-   source my_venv/bin/activate  # or my_venv\Scripts\activate on Windows
-
-3. **Install dependencies**
-   ```bash
-   pip install -r airflow/requirements.txt
-
-4. **Rename the configuration file and the credentials to the file.**
-   ```bash
-   mv config/config.conf.example config/config.conf
-
-3. **Build and run Airflow in Docker**
-   ```bash
-   cd airflow
-   docker compose up -d
-
-4. **Access Airflow UI**
-   ```bash
-   http://localhost:8080
-   Username: airflow
-   Password: airflow
 
 ## Project Folders and Files Descriptions
 Here is an overview of the sub-directories and files. Under the reddit_data_engineering main folder, we have:
@@ -147,6 +114,43 @@ Within the airflow/ directory of this project, several essential subdirectories,
 
 **utils/ sub-directory**
 - constants.py: Centralized constants and config loader for the project. It reads from config.conf and provides clean access to settings across different scripts.
+---
+
+## 📦 Setup Instructions
+
+> ⚠️ Ensure you have AWS credentials configured (`aws configure`) and Docker installed.
+
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/your-username/Reddit-Data-Engineering.git
+   cd Reddit-Data-Engineering
+
+2. **Set up Python virtual environment**
+   ```bash
+   python -m venv my_venv
+
+   source my_venv/bin/activate  # or my_venv\Scripts\activate on Windows
+
+3. **Install dependencies**
+   ```bash
+   pip install -r airflow/requirements.txt
+
+4. **Rename the configuration file and the credentials to the file.**
+   ```bash
+   mv config/config.conf.example config/config.conf
+
+3. **Build and run Airflow in Docker**
+   ```bash
+   cd airflow
+   docker compose up -d
+
+4. **Access Airflow UI**
+   ```bash
+   http://localhost:8080
+   Username: airflow
+   Password: airflow
+
+---
 
 ## 📍 Future Improvements
 - Add tests under the tests/ folder
