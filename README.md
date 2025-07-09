@@ -114,6 +114,7 @@ Within the airflow/ directory of this project, several essential subdirectories,
 
 **utils/ sub-directory**
 - ***constants.py***: Centralized constants and config loader for the project. It reads from config.conf and provides clean access to settings across different scripts.
+
 ---
 
 ## 📦 Setup Instructions
@@ -161,8 +162,8 @@ Within the airflow/ directory of this project, several essential subdirectories,
 
 - Add unit and integration tests
 
-<!--
+---
+
 ## 📖 Medium Article
 📖 Medium Article
-👉 Check out the full walkthrough in the accompanying Medium article: [[Link here]](https://medium.com/@chisomnnamani/building-a-reddit-data-pipeline-220811ed16fa)
--->
+👉 Check out the full walkthrough on the project and the step by step guidleines that will help you complete this project yourself: [[Link here]](https://blog.det.life/how-i-built-a-reddit-data-pipeline-9f414003097d)
