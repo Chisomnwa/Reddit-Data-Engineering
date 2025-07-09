@@ -165,5 +165,4 @@ Within the airflow/ directory of this project, several essential subdirectories,
 ---
 
 ## 📖 Medium Article
-📖 Medium Article
-👉 Check out the full walkthrough on the project and the step by step guidleines that will help you complete this project yourself: [[Link here]](https://blog.det.life/how-i-built-a-reddit-data-pipeline-9f414003097d)
+Check out the full walkthrough on the project and the step by step guidleines that will help you complete this project yourself: [[Link here]](https://blog.det.life/how-i-built-a-reddit-data-pipeline-9f414003097d)
