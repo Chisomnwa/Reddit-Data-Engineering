@@ -22,7 +22,7 @@ module "iam" {
   data_bucket_name   = module.my_s3_data_bucket.bucket_name
   script_bucket_name = module.my_s3_script_bucket.bucket_name
   aws_region         = "af-south-1"   # Replace if using a different region
-  aws_account_id     = "590183895800" # Your actual AWS Account ID
+  aws_account_id     = "000000000000" #Your actual AWS Account ID
 }
 
 output "glue_s3_role_arn" {
