@@ -1,4 +1,5 @@
-# Required variables (you already have these)
+# Defines inputs to the glue module.
+# Think of it as the settings or parameters the glue module needs.
 variable "data_bucket_name" {
   description = "Name of the S3 bucket where data is stored"
   type        = string
