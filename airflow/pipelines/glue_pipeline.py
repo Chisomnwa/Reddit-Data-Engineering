@@ -29,36 +29,7 @@ def trigger_glue_crawler(crawler_name, region_name=AWS_REGION):
     return "done"  # ✅ Explicit return so Airflow marks task as successful
 
 
-# def trigger_glue_job(job_name, input_path, output_path, region_name=AWS_REGION):
-#     """
-#     Trigger an AWS Glue Job using boto3.
-
-#     Args:
-#         job_name (str): Name of the Glue job.
-#         input_path (str): S3 path to raw data.
-#         output_path (str): S3 path for transformed data.
-#         region_name (str): AWS region.
-#     """
-#     glue = boto3.client(
-#         'glue',
-#         region_name=region_name,
-#         aws_access_key_id=AWS_ACCESS_KEY_ID,
-#         aws_secret_access_key=AWS_SECRET_ACCESS_KEY
-#     )
-
-#     response = glue.start_job_run(
-#         JobName=job_name,
-#         Arguments={
-#             '--input_path': input_path,
-#             '--output_path': output_path
-#         }
-#     )
-
-#     job_run_id = response['JobRunId']
-#     print(f"Glue Job triggered. JobRunId: {job_run_id}")
-#     return job_run_id
-
-# This particular versiontriggers the AWS Glue job, checking if it's already running to avoid concurrent executions.
+# This particular version triggers the AWS Glue job, checking if it's already running to avoid concurrent executions.
 def trigger_glue_job(job_name, input_path, output_path, region_name=AWS_REGION):
     """
     Trigger an AWS Glue Job using boto3, unless it's already running.
